@@ -2,46 +2,44 @@
 using System.IO;
 using System.Runtime.InteropServices;
 
-    class Programm
-    {
+class Programm
+{
     static void Main(string[] args)
     {
         DeleteNoUsing();
     }
 
-    static void DeleteNoUsing()
+    public static void DeleteNoUsing()
         {
         try
         {
-            DirectoryInfo dirInfo = new DirectoryInfo(@"/Users/Kolesnikov_aa/desktop/8Module");
+            DirectoryInfo dirInfo = new DirectoryInfo(@"/Users/Kolesnikov_aa/desktop/88Module");
 
             if (dirInfo.Exists)
             {
-                FileInfo[] fis = dirInfo.GetFiles();
-                foreach (FileInfo fi in fis)
+                FileInfo[] fff = dirInfo.GetFiles();
+                foreach (FileInfo f in fff)
                 {
-                    Console.WriteLine("Файл в директории: " + fi);
-                }
-                //string filePath = @"/Users/Kolesnikov_aa/desktop/8Module/Text.txt";
-                //DateTime lastWriteTime = File.GetLastWriteTime(fi);
-                //TimeSpan timeSpan = TimeSpan.FromMinutes(30);
-                //DateTime thresholdTime = DateTime.Now.Subtract(timeSpan);
-
-
-                //if (lastWriteTime < thresholdTime)
-                //    Console.WriteLine("Файл подлежит удалению");
-                //Console.ReadKey();
-                DirectoryInfo[] dis = dirInfo.GetDirectories();
-                foreach (DirectoryInfo disd in dis)
-                {
-                    Console.WriteLine("Директорий: " + disd);
-                }
+                    DateTime lastWriteTime = File.GetLastWriteTime("" + f);
+                    TimeSpan timeSpan = TimeSpan.FromMinutes(30);
+                    DateTime thresholdTime = DateTime.Now.Subtract(timeSpan);
                     
-// 8.2.3 Удаление директория со всем содержимым *******
-//dirInfo.Delete(true);                              
-//Console.WriteLine("Каталог удален");
+                    Console.WriteLine("Имя файла: " + f);
+                    Console.WriteLine("Время последнего исользования файла: " + lastWriteTime);
 
+                if (lastWriteTime < thresholdTime)
+                    {
+                        Console.WriteLine("Файл подлежит удалению");
+                        File.Delete("" + f);                              
+                        Console.WriteLine("Файл удален");
+                    }
+                }
                 
+                DirectoryInfo[] ddd = dirInfo.GetDirectories();
+                foreach (DirectoryInfo dirinfo in ddd)
+                {
+                    Console.WriteLine("Директорий: " + dirinfo);
+                }
             }
         }
         catch (Exception e)
