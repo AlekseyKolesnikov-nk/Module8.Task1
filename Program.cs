@@ -4,54 +4,45 @@ using System.Runtime.InteropServices;
 
 class Programm
 {
-    static void Main(string[] args)
+    public static void Main(string[] args)
     {
-        DeleteNoUsing();
+        DirectoryInfo dirInfo = new DirectoryInfo(@"/Users/Kolesnikov_aa/desktop/8Module");
+        if (dirInfo.Exists)                                                 // Проверка пути
+            DeleteFiles(dirInfo);
     }
 
-    public static void DeleteNoUsing()
-        {
+    public static void DeleteFiles(DirectoryInfo dirInfo)
+    {
         try
         {
-            DirectoryInfo dirInfo = new DirectoryInfo(@"/Users/Kolesnikov_aa/desktop/88Module");
-
-            if (dirInfo.Exists)
+            FileInfo[] fff = dirInfo.GetFiles();
+            foreach (FileInfo ff in fff)                                    // Перебираем файлы в директории
             {
-                FileInfo[] fff = dirInfo.GetFiles();
-                foreach (FileInfo f in fff)
-                {
-                    DateTime lastWriteTime = File.GetLastWriteTime("" + f);
-                    TimeSpan timeSpan = TimeSpan.FromMinutes(30);
-                    DateTime thresholdTime = DateTime.Now.Subtract(timeSpan);
-                    
-                    Console.WriteLine("Имя файла: " + f);
-                    Console.WriteLine("Время последнего исользования файла: " + lastWriteTime);
+                DateTime lastWriteTime = File.GetLastWriteTime("" + ff);    // Время последнего сохранения // На "ff" - ругался, получилось через такую конструкцию
+                TimeSpan timeSpan = TimeSpan.FromMinutes(30);               // "Контрольный интервал"
+                DateTime minTime = DateTime.Now.Subtract(timeSpan);         // Допустимое время (текущее время - 30 минут)
 
-                if (lastWriteTime < thresholdTime)
-                    {
-                        Console.WriteLine("Файл подлежит удалению");
-                        File.Delete("" + f);                              
-                        Console.WriteLine("Файл удален");
-                    }
-                }
-                
-                DirectoryInfo[] ddd = dirInfo.GetDirectories();
-                foreach (DirectoryInfo dirinfo in ddd)
+                Console.WriteLine("\nФайл: " + ff);
+                Console.WriteLine("Время последнего сохранения: " + lastWriteTime);
+
+                if (lastWriteTime < minTime)                                // Если время последнего сохранения < допустимого
                 {
-                    Console.WriteLine("Директорий: " + dirinfo);
+                    File.Delete("" + ff);
+                    Console.WriteLine("Файл удален");
                 }
             }
+
+            DirectoryInfo[] ddd = dirInfo.GetDirectories();
+            foreach (DirectoryInfo dd in ddd)                               // Перебираем директории
+            {
+                Console.WriteLine("Директорий: " + dd);
+                dirInfo = dd;
+                DeleteFiles(dirInfo);
+            }
         }
-        catch (Exception e)
+        catch (Exception e)                                                 // Проверка исключений
         {
             Console.WriteLine(e.Message);
         }
     }
 }
-
-
-
-
-
-
-
